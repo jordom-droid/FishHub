@@ -1,258 +1,52 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#062b3a">
-<link rel="manifest" href="manifest.json">
-<title>FishWindow Geelong</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#062b3a"><link rel="manifest" href="manifest.json"><title>FishWindow Geelong</title>
 <style>
-:root{--bg:#071923;--card:#0e2b38;--card2:#123744;--text:#eef8fa;--muted:#9bb4bc;--accent:#48d7a7;--warn:#ffcb69;--bad:#ff7b7b}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#061923,#0a2631 65%,#061923);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
-.app{max-width:620px;margin:auto;padding:env(safe-area-inset-top) 14px 28px}
-header{padding:16px 2px 10px;display:flex;justify-content:space-between;align-items:center}
-h1{font-size:25px;margin:0}.sub{color:var(--muted);font-size:12px;margin-top:2px}
-button,select,input{font:inherit;border:0;border-radius:12px}
-select,input{background:#173946;color:var(--text);padding:11px;width:100%;outline:none}
-button{background:var(--accent);color:#05241d;font-weight:800;padding:11px 14px;cursor:pointer}
-.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:8px 0 12px}
-.card{background:rgba(14,43,56,.95);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:15px;margin:10px 0;box-shadow:0 8px 30px rgba(0,0,0,.16)}
-.hero{display:grid;grid-template-columns:130px 1fr;gap:14px;align-items:center}
-.score{width:116px;height:116px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--accent) 0deg,var(--accent) var(--scoredeg),#244550 var(--scoredeg));position:relative}
-.score:after{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--bg)}
-.score b,.score span{position:relative;z-index:2}.score b{font-size:34px}.score span{font-size:11px;color:var(--muted);display:block;text-align:center}
-.label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}.big{font-size:21px;font-weight:800;margin:2px 0 7px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.metric{background:#102f3b;border-radius:13px;padding:11px}.metric b{display:block;font-size:17px;margin-top:3px}
-.timeline{display:flex;overflow-x:auto;gap:8px;padding-bottom:2px}.day{min-width:92px;background:#102f3b;border-radius:12px;padding:10px;text-align:center;cursor:pointer}.day.active{outline:2px solid var(--accent)}.day b{display:block;font-size:17px}.day small{color:var(--muted)}
-.window{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07)}.window:last-child{border-bottom:0}
-.window .time{font-size:20px;font-weight:800}.pill{border-radius:999px;padding:5px 8px;background:#17463e;color:#8ff0cf;font-size:11px;font-weight:700}
-.tide{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tide div{background:#102f3b;padding:10px;border-radius:12px}.tide b{font-size:17px}
-details summary{cursor:pointer;color:#b8d1d8;font-weight:700}.bar{height:7px;border-radius:5px;background:#25434d;overflow:hidden;margin-top:7px}.bar i{display:block;height:100%;background:var(--accent)}
-.notice{font-size:12px;color:var(--muted);line-height:1.5}.error{color:#ffb1b1}.loading{opacity:.65}
-footer{color:#77929b;font-size:10px;line-height:1.45;margin:18px 3px}
-@media(max-width:390px){.hero{grid-template-columns:105px 1fr}.score{width:100px;height:100px}.score b{font-size:29px}}
-</style>
-</head>
-<body>
-<div class="app">
+:root{--bg:#071923;--card:#0e2b38;--card2:#123744;--text:#eef8fa;--muted:#9bb4bc;--accent:#48d7a7;--good:#43d17a;--mid:#ffcb69;--bad:#ff6b6b;--track:#244550}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,var(--bg),#0a2631 65%,var(--bg));color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;transition:.2s}.app{max-width:680px;margin:auto;padding:env(safe-area-inset-top) 14px 28px}header{padding:16px 2px 10px;display:flex;justify-content:space-between;align-items:center}h1{font-size:25px;margin:0}.sub{color:var(--muted);font-size:12px;margin-top:2px}button,select,input{font:inherit;border:0;border-radius:12px}select,input{background:var(--card2);color:var(--text);padding:11px;width:100%;outline:none}button{background:var(--accent);color:#05241d;font-weight:800;padding:11px 14px;cursor:pointer}.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:8px 0 12px}.card{background:color-mix(in srgb,var(--card) 95%,transparent);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:15px;margin:10px 0;box-shadow:0 8px 30px rgba(0,0,0,.16)}.hero{display:grid;grid-template-columns:130px 1fr;gap:14px;align-items:center}.score{width:116px;height:116px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--scorecolor) 0deg,var(--scorecolor) var(--scoredeg),var(--track) var(--scoredeg));position:relative}.score:after{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--bg)}.score b,.score span{position:relative;z-index:2}.score b{font-size:34px}.score span{font-size:11px;color:var(--muted);display:block;text-align:center}.label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}.big{font-size:21px;font-weight:800;margin:2px 0 7px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.metric{background:color-mix(in srgb,var(--card2) 92%,transparent);border-radius:13px;padding:11px}.metric b{display:block;font-size:17px;margin-top:3px}.timeline{display:flex;overflow-x:auto;gap:8px;padding-bottom:2px}.day{min-width:92px;background:var(--card2);border-radius:12px;padding:9px;text-align:center;cursor:pointer;border:2px solid transparent}.day.active{border-color:var(--accent)}.day.best{box-shadow:0 0 0 2px var(--good) inset}.day.worst{box-shadow:0 0 0 2px var(--bad) inset}.day b{display:block;font-size:16px}.day small{color:var(--muted)}.day .dscore{font-weight:900;font-size:18px;margin-top:3px}.day.best .dscore{color:var(--good)}.day.worst .dscore{color:var(--bad)}.window{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07)}.window:last-child{border-bottom:0}.window .time{font-size:20px;font-weight:800}.pill{border-radius:999px;padding:5px 8px;background:var(--card2);color:var(--accent);font-size:11px;font-weight:700}.tide{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.tide div{background:var(--card2);padding:10px;border-radius:12px}.tide b{font-size:17px}.breakdown{display:grid;gap:10px;margin-top:12px}.scoreline{display:grid;grid-template-columns:1fr auto;gap:6px}.scoreline .bar{grid-column:1/-1}.bar{height:7px;border-radius:5px;background:var(--track);overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);border-radius:5px}.whytext{font-size:12px;color:var(--muted);line-height:1.45}.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.swatch{width:34px;height:34px;border-radius:50%;padding:0;border:2px solid rgba(255,255,255,.35)}.notice{font-size:12px;color:var(--muted);line-height:1.5}.error{color:#ffb1b1}.loading{opacity:.65}footer{color:#77929b;font-size:10px;line-height:1.45;margin:18px 3px}a{color:var(--accent)}@media(max-width:390px){.hero{grid-template-columns:105px 1fr}.score{width:100px;height:100px}.score b{font-size:29px}.settings-grid{grid-template-columns:1fr}}
+</style></head>
+<body><div class="app">
 <header><div><h1>🎣 FishWindow</h1><div class="sub">Geelong • Bellarine • Surf Coast</div></div><button id="refresh">↻</button></header>
-
-<div class="toolbar">
-  <select id="spot"></select>
-  <select id="species"></select>
-</div>
-
-<div class="card">
-  <div class="label">Forecast date</div>
-  <div class="timeline" id="days"></div>
-</div>
-
+<div class="toolbar"><select id="spot"></select><select id="species"></select></div>
+<div class="card"><div class="label">7-day fishing outlook</div><div class="timeline" id="days"></div><div class="notice" style="margin-top:9px">Green = best day • Red = weakest day • score is a calculated guide, not a catch guarantee.</div></div>
 <div id="status" class="card notice loading">Loading live conditions…</div>
-
 <section id="content" style="display:none">
-<div class="card hero">
-  <div class="score" id="scoreRing"><div><b id="score">--</b><span>/ 100</span></div></div>
-  <div><div class="label">Fishing opportunity</div><div class="big" id="verdict">--</div><div class="notice" id="summary">--</div></div>
-</div>
-
-<div class="card">
- <div class="label">Best windows</div>
- <div id="windows"></div>
-</div>
-
-<div class="card">
- <div class="label">Conditions</div>
- <div class="grid" id="metrics"></div>
-</div>
-
-<div class="card">
- <div class="label">Tides</div>
- <div class="tide" id="tides"><div>Loading…</div></div>
- <p class="notice" id="tideNote"></p>
-</div>
-
-<div class="card">
- <div class="label">Moon & light</div>
- <div class="grid" id="moon"></div>
-</div>
-
-<div class="card">
- <details><summary>Why this score?</summary><div id="why" class="notice" style="margin-top:10px"></div></details>
-</div>
+<div class="card hero"><div class="score" id="scoreRing"><div><b id="score">--</b><span>/ 100</span></div></div><div><div class="label">Fishing opportunity</div><div class="big" id="verdict">--</div><div class="notice" id="summary">--</div></div></div>
+<div class="card"><div class="label">Best windows</div><div id="windows"></div></div>
+<div class="card"><div class="label">Conditions</div><div class="grid" id="metrics"></div></div>
+<div class="card"><div class="label">Tides</div><div class="tide" id="tides"></div><p class="notice" id="tideNote"></p></div>
+<div class="card"><div class="label">Moon & light</div><div class="grid" id="moon"></div></div>
+<div class="card"><div class="label">How the final score is calculated</div><div class="notice">Each criterion is scored from 0–100, then multiplied by its weighting. The displayed total is the weighted sum.</div><div class="breakdown" id="breakdown"></div><div id="why" class="whytext" style="margin-top:12px"></div></div>
 </section>
-
-<footer>
-Forecast guidance only — fish activity cannot be guaranteed. Check current marine warnings, local access restrictions and Victorian fishing regulations before going. Tide predictions are not a substitute for navigation information.
-<br><br>Weather/marine: Open-Meteo. Tide option: WorldTides API. Moon/solunar: astronomical calculation.
-</footer>
+<div class="card"><details><summary style="cursor:pointer;font-weight:800">⚙ App settings</summary><div style="margin-top:14px"><div class="settings-grid"><div><div class="label">Timezone</div><select id="timezone"><option value="Australia/Melbourne">Australia/Melbourne</option><option value="Australia/Sydney">Australia/Sydney</option><option value="Australia/Brisbane">Australia/Brisbane</option><option value="Australia/Adelaide">Australia/Adelaide</option><option value="Australia/Perth">Australia/Perth</option><option value="Pacific/Auckland">Pacific/Auckland</option><option value="UTC">UTC</option><option value="local">Device timezone</option></select></div><div><div class="label">Theme</div><select id="theme"><option value="ocean">Ocean</option><option value="dark">Dark</option><option value="light">Light</option><option value="sand">Sand</option></select></div></div><div style="margin-top:14px"><div class="label">Custom colours</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px"><label class="notice">Background<input id="bgColor" type="color" value="#071923" style="height:38px;padding:2px"></label><label class="notice">Cards<input id="cardColor" type="color" value="#0e2b38" style="height:38px;padding:2px"></label><label class="notice">Accent<input id="accentColor" type="color" value="#48d7a7" style="height:38px;padding:2px"></label></div><div class="label" style="margin-top:12px">Accent presets</div><div class="swatches"><button class="swatch" data-accent="#48d7a7" style="background:#48d7a7"></button><button class="swatch" data-accent="#4da3ff" style="background:#4da3ff"></button><button class="swatch" data-accent="#ff9f43" style="background:#ff9f43"></button><button class="swatch" data-accent="#d56cff" style="background:#d56cff"></button><button class="swatch" data-accent="#ff5c8a" style="background:#ff5c8a"></button></div></div><div class="notice" style="margin-top:12px">Your settings are stored only on this device.</div></div></details></div>
+<footer>Forecast guidance only — fish activity cannot be guaranteed. Check current marine warnings, local access restrictions and Victorian fishing regulations before going. Tide predictions are not a substitute for navigation information.<br><br>Weather/marine forecast: Open-Meteo. Tide predictions: Bureau of Meteorology published Victorian tide tables. Sunrise/sunset: forecast API local-time values. Moon/solunar: astronomical calculation.</footer>
 </div>
-
 <script>
-const SPOTS=[
-["Geelong Waterfront",-38.1471,144.3607],["Cunningham Pier",-38.1436,144.3586],
-["Clifton Springs",-38.1557,144.5680],["Portarlington",-38.1165,144.6550],
-["St Leonards",-38.1680,144.7150],["Queenscliff",-38.2670,144.6620],
-["Point Lonsdale",-38.2870,144.6110],["Barwon Heads",-38.2670,144.4870],
-["Torquay",-38.3320,144.3260],["Anglesea",-38.4090,144.1850],
-["Aireys Inlet",-38.4610,144.1030],["Lorne",-38.5400,143.9760]
-];
-const SPECIES={
-"All species":{tide:1,wind:1,swell:1},
-"Snapper":{tide:1.2,wind:.9,swell:.8}, "King George whiting":{tide:1.25,wind:.85,swell:.7},
-"Calamari":{tide:1.05,wind:.8,swell:.65},"Australian salmon":{tide:.9,wind:1.05,swell:1.0},
-"Flathead":{tide:1.15,wind:.95,swell:.75},"Gummy shark":{tide:1.2,wind:.85,swell:.9}
-};
-const $=id=>document.getElementById(id);
-let selectedDate=new Date(); selectedDate.setHours(0,0,0,0); let data=null;
-
-SPOTS.forEach((s,i)=>$("spot").add(new Option(s[0],i)));
-Object.keys(SPECIES).forEach(s=>$("species").add(new Option(s)));
-$("spot").value=0;
-
-function pad(n){return String(n).padStart(2,"0")}
-function iso(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
-function fmtTime(d){return d.toLocaleTimeString("en-AU",{hour:"numeric",minute:"2-digit"})}
-function clamp(x,a=0,b=100){return Math.max(a,Math.min(b,x))}
-function degToRad(x){return x*Math.PI/180}
-function radToDeg(x){return x*180/Math.PI}
-function sunTimes(date,lat,lon){
- const N=Math.floor((Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())-Date.UTC(date.getFullYear(),0,0))/86400000);
- const lngHour=lon/15, out={};
- for(const [name,zenith] of [["rise",90.833],["set",90.833]]){
-  const t=N+((name==="rise"?6:18)-lngHour)/24;
-  const M=(0.9856*t)-3.289;
-  let L=M+1.916*Math.sin(degToRad(M))+0.020*Math.sin(2*degToRad(M))+282.634; L=(L+360)%360;
-  let RA=radToDeg(Math.atan(.91764*Math.tan(degToRad(L)))); RA=(RA+360)%360;
-  RA=RA/15;
-  const sinDec=.39782*Math.sin(degToRad(L)), cosDec=Math.cos(Math.asin(sinDec));
-  const cosH=(Math.cos(degToRad(zenith))-sinDec*Math.sin(degToRad(lat)))/(cosDec*Math.cos(degToRad(lat)));
-  if(cosH>1||cosH<-1){out[name]=null;continue}
-  let H=(name==="rise"?360-radToDeg(Math.acos(cosH)):radToDeg(Math.acos(cosH)))/15;
-  let UT=(H+RA-.06571*t-6.622-lngHour)%24;if(UT<0)UT+=24;
-  const local=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate(),Math.floor(UT),Math.floor((UT%1)*60)));
-  out[name]=new Date(local.toLocaleString("en-US",{timeZone:"Australia/Melbourne"}));
- }
- return out;
-}
-function moonPhase(date){
- // Synodic phase using a known new-moon reference; adequate for display/score.
- const ref=Date.UTC(2000,0,6,18,14), syn=29.530588853;
- const age=((date.getTime()-ref)/86400000%syn+syn)%syn, frac=age/syn;
- const names=["New Moon","Waxing Crescent","First Quarter","Waxing Gibbous","Full Moon","Waning Gibbous","Last Quarter","Waning Crescent"];
- return {age,frac,name:names[Math.floor(frac*8)],illum:(1-Math.cos(2*Math.PI*frac))/2};
-}
-function moonRiseSet(date,lat,lon){
- // Approximate lunar timing by shifting the daily sun time according to phase.
- const s=sunTimes(date,lat,lon), p=moonPhase(date), shift=p.age*0.8;
- const rise=s.rise?new Date(s.rise.getTime()+shift*3600000):null;
- const set=s.set?new Date(s.set.getTime()+shift*3600000):null;
- return {rise,set};
-}
-function solunarWindows(date,lat,lon){
- const s=sunTimes(date,lat,lon), m=moonPhase(date), moon=moonRiseSet(date,lat,lon);
- const arr=[];
- if(s.rise)arr.push({t:new Date(s.rise.getTime()-45*60000),e:new Date(s.rise.getTime()+90*60000),label:"Dawn"});
- if(s.set)arr.push({t:new Date(s.set.getTime()-60*60000),e:new Date(s.set.getTime()+60*60000),label:"Dusk"});
- if(moon.rise)arr.push({t:new Date(moon.rise.getTime()-60*60000),e:new Date(moon.rise.getTime()+60*60000),label:"Moonrise"});
- if(moon.set)arr.push({t:new Date(moon.set.getTime()-60*60000),e:new Date(moon.set.getTime()+60*60000),label:"Moonset"});
- // Approximate major lunar transits by 6h after moonrise and 6h before moonrise.
- if(moon.rise)arr.push({t:new Date(moon.rise.getTime()+5*3600000),e:new Date(moon.rise.getTime()+7*3600000),label:"Moon transit"});
- return arr.sort((a,b)=>a.t-b.t);
-}
-async function weather(lat,lon,date){
- const d=iso(date), end=new Date(date); end.setDate(end.getDate()+1);
- const u=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,precipitation,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,cloud_cover&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=Australia%2FMelbourne&start_date=${d}&end_date=${d}`;
- const m=`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_direction,wave_period&daily=wave_height_max&timezone=Australia%2FMelbourne&start_date=${d}&end_date=${d}`;
- const [a,b]=await Promise.all([fetch(u),fetch(m)]);
- if(!a.ok)throw Error("Weather service unavailable"); return {w:await a.json(),m:b.ok?await b.json():null};
-}
-async function tides(lat,lon,date){
- const key=localStorage.getItem("worldtidesKey");
- if(!key)return null;
- const u=`https://www.worldtides.info/api/v3?extremes&date=${iso(date)}&days=1&localtime&lat=${lat}&lon=${lon}&key=${encodeURIComponent(key)}`;
- const r=await fetch(u); if(!r.ok)throw Error("Tide API error"); const j=await r.json();
- if(j.status&&j.status!==200)throw Error(j.error||"Tide API error"); return j;
-}
-function avg(a){a=a.filter(x=>Number.isFinite(x));return a.reduce((x,y)=>x+y,0)/(a.length||1)}
-function windScore(speed){return speed<=12?100:speed<=18?75:speed<=24?45:speed<=30?20:0}
-function swellScore(h){return h<=0.8?100:h<=1.4?75:h<=2?45:h<=3?20:0}
-function pressureTrend(vals){
- if(vals.length<3)return {score:60,label:"Stable"};
- const first=avg(vals.slice(0,3)), last=avg(vals.slice(-3)), diff=last-first;
- return diff>2?{score:90,label:"Rising"}:diff<-2?{score:75,label:"Falling"}:{score:65,label:"Stable"};
-}
-function tideScore(events, target){
- if(!events||events.length<2)return 60;
- const ds=events.map(e=>new Date(e.date)), best=[];
- for(let i=0;i<ds.length-1;i++)best.push((ds[i+1]-ds[i])/3600000);
- const hrs=avg(best); return hrs>=3&&hrs<=7?88:hrs<2?55:72;
-}
-function calcScore(w,m,tidesData){
- const hs=w.w.hourly, n=hs.time.length;
- const wind=avg(hs.wind_speed_10m||[]), gust=avg(hs.wind_gusts_10m||[]);
- const pressure=pressureTrend(hs.pressure_msl||[]);
- const rain=avg(hs.precipitation_probability||[]);
- const cloud=avg(hs.cloud_cover||[]);
- const wave=m?avg(m.hourly.wave_height||[]):1;
- const s=sunTimes(selectedDate,SPOTS[$("spot").value][1],SPOTS[$("spot").value][2]);
- const sunrise=s.rise?.getTime()||0, sunset=s.set?.getTime()||0;
- let light=75, sol=0;
- if(sunrise&&sunset){light=92; sol=15}
- const phase=moonPhase(selectedDate);
- sol += phase.illum>0.8?10:phase.illum>0.45?6:3;
- const ts=tideScore(tidesData?.extremes);
- const ws=windScore(wind), ss=swellScore(wave), rainS=clamp(100-rain*1.15), cloudS=clamp(100-Math.abs(cloud-55)*1.5);
- const raw=.23*ts+.18*ws+.14*ss+.14*pressure.score+.09*rainS+.06*cloudS+.10*light+.06*clamp(sol*5);
- return {score:Math.round(clamp(raw)),wind,wave,pressure,rain,cloud,ts,ws,ss};
-}
-function renderDays(){
- $("days").innerHTML="";
- for(let i=0;i<7;i++){let d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+i);
-  const el=document.createElement("div");el.className="day"+(iso(d)===iso(selectedDate)?" active":"");
-  el.innerHTML=`<b>${d.toLocaleDateString("en-AU",{weekday:"short"})}</b><small>${d.getDate()}/${d.getMonth()+1}</small>`;
-  el.onclick=()=>{selectedDate=d;renderDays();load()};$("days").appendChild(el);
- }
-}
-function setStatus(x,err=false){$("status").className="card notice"+(err?" error":"");$("status").innerHTML=x}
-async function load(){
- const [name,lat,lon]=SPOTS[$("spot").value]; const sp=$("species").value;
- setStatus(`Loading ${name} for ${selectedDate.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long"})}…`);
- $("content").style.display="none";
- try{
-  const w=await weather(lat,lon,selectedDate);
-  let td=null; try{td=await tides(lat,lon,selectedDate)}catch(e){}
-  data={w,td}; const c=calcScore(w,w.m,td);
-  const score=c.score; $("score").textContent=score; $("scoreRing").style.setProperty("--scoredeg",(score*3.6)+"deg");
-  $("verdict").textContent=score>=80?"Excellent window":score>=65?"Good conditions":score>=50?"Fishable":"Marginal conditions";
-  $("summary").textContent=`${sp}: strongest opportunity comes from the combination of tide movement, light period and marine conditions.`;
-  $("metrics").innerHTML=[
-   ["Wind",`${c.wind.toFixed(0)} km/h`],["Gusts",`${avg(w.w.hourly.wind_gusts_10m||[]).toFixed(0)} km/h`],
-   ["Pressure",`${avg(w.w.hourly.pressure_msl||[]).toFixed(0)} hPa`],["Trend",c.pressure.label],
-   ["Swell",`${c.wave.toFixed(1)} m`],["Rain chance",`${c.rain.toFixed(0)}%`],
-   ["Cloud",`${c.cloud.toFixed(0)}%`],["Moon",moonPhase(selectedDate).name]
-  ].map(x=>`<div class="metric"><span class="label">${x[0]}</span><b>${x[1]}</b></div>`).join("");
-  const ss=sunTimes(selectedDate,lat,lon), mw=moonRiseSet(selectedDate,lat,lon), ph=moonPhase(selectedDate);
-  $("moon").innerHTML=[["Sunrise",ss.rise?fmtTime(ss.rise):"--"],["Sunset",ss.set?fmtTime(ss.set):"--"],["Moon phase",ph.name],["Illumination",`${Math.round(ph.illum*100)}%`]].map(x=>`<div class="metric"><span class="label">${x[0]}</span><b>${x[1]}</b></div>`).join("");
-  if(td?.extremes?.length){
-    $("tides").innerHTML=td.extremes.slice(0,4).map(e=>`<div><span class="label">${e.type}</span><br><b>${fmtTime(new Date(e.date))}</b><br><span class="notice">${Number(e.height).toFixed(2)} m</span></div>`).join("");
-    $("tideNote").textContent="Tide data supplied by WorldTides. Predictions are not the same as actual water level; weather and wind can alter observed levels.";
-  }else{
-    $("tides").innerHTML=`<div><b>Not connected</b><br><span class="notice">Add a WorldTides API key in the app setup.</span></div>`;
-    $("tideNote").innerHTML=`BOM provides official Geelong, Queenscliff, Point Lonsdale, Lorne and other Victorian tide predictions. <a href="https://www.bom.gov.au/australia/tides/" target="_blank" style="color:#7cebc7">Open BOM tides</a>.`;
-  }
-  const wins=solunarWindows(selectedDate,lat,lon).filter(x=>x.t.toDateString()===selectedDate.toDateString()).slice(0,5);
-  $("windows").innerHTML=wins.length?wins.map(x=>`<div class="window"><div><div class="time">${fmtTime(x.t)}–${fmtTime(x.e)}</div><span class="notice">${x.label}</span></div><span class="pill">WINDOW</span></div>`).join(""):`<div class="notice">No calculated light/solunar windows.</div>`;
-  $("why").innerHTML=`<p><b>Tide movement:</b> ${Math.round(c.ts)}/100 — tide timing is weighted heavily because movement is important in many local bay and coastal fisheries.</p>
-  <p><b>Wind:</b> ${Math.round(c.ws)}/100 — stronger wind reduces the score, with species-specific weighting.</p>
-  <p><b>Swell:</b> ${Math.round(c.ss)}/100 — coastal locations are penalised more by larger swell.</p>
-  <p><b>Pressure:</b> ${c.pressure.label} — falling/rising pressure is treated as a change in conditions, not as a guarantee of feeding.</p>
-  <p><b>Light & moon:</b> dawn/dusk and moon illumination are used as secondary timing signals.</p>`;
-  $("status").innerHTML=`Live forecast loaded • ${new Date().toLocaleTimeString("en-AU",{hour:"numeric",minute:"2-digit"})}`;
-  $("content").style.display="block";
- }catch(e){setStatus(`Could not load live data: ${e.message}`,true)}
-}
-$("spot").onchange=load;$("species").onchange=load;$("refresh").onclick=load;
-renderDays();load();
-</script>
-</body>
-</html>
+const SPOTS=[["Geelong Waterfront",-38.1471,144.3607],["Cunningham Pier",-38.1436,144.3586],["Clifton Springs",-38.1557,144.5680],["Portarlington",-38.1165,144.6550],["St Leonards",-38.1680,144.7150],["Queenscliff",-38.2670,144.6620],["Point Lonsdale",-38.2870,144.6110],["Barwon Heads",-38.2670,144.4870],["Torquay",-38.3320,144.3260],["Anglesea",-38.4090,144.1850],["Aireys Inlet",-38.4610,144.1030],["Lorne",-38.5400,143.9760]];
+const SPECIES={"All species":{tide:1,wind:1,swell:1},"Snapper":{tide:1.2,wind:.9,swell:.8},"King George whiting":{tide:1.25,wind:.85,swell:.7},"Calamari":{tide:1.05,wind:.8,swell:.65},"Australian salmon":{tide:.9,wind:1.05,swell:1},"Flathead":{tide:1.15,wind:.95,swell:.75},"Gummy shark":{tide:1.2,wind:.85,swell:.9}};
+const $=id=>document.getElementById(id); let selectedDate=new Date();selectedDate.setHours(0,0,0,0);let week=[];
+SPOTS.forEach((s,i)=>$("spot").add(new Option(s[0],i)));Object.keys(SPECIES).forEach(s=>$('species').add(new Option(s)));$('spot').value=0;
+const saved={tz:localStorage.getItem('fishTz')||'Australia/Melbourne',theme:localStorage.getItem('fishTheme')||'ocean',accent:localStorage.getItem('fishAccent')||'#48d7a7',bg:localStorage.getItem('fishBg')||'',card:localStorage.getItem('fishCard')||''};$('timezone').value=saved.tz;$('theme').value=saved.theme;if(saved.bg)$('bgColor').value=saved.bg;if(saved.card)$('cardColor').value=saved.card;$('accentColor').value=saved.accent;
+function applyTheme(){const t=$('theme').value,a=localStorage.getItem('fishAccent')||saved.accent;let v;if(t==='light')v={bg:'#eef4f5',card:'#fff',card2:'#e2edf0',text:'#10252d',muted:'#597078',track:'#c3d4d9'};else if(t==='sand')v={bg:'#29231b',card:'#3c3022',card2:'#51422e',text:'#fff8ea',muted:'#cbbda5',track:'#68583f'};else v=t==='dark'?{bg:'#05070a',card:'#10151b',card2:'#1a222b',text:'#f1f4f6',muted:'#9ba8b2',track:'#303b44'}:{bg:'#071923',card:'#0e2b38',card2:'#123744',text:'#eef8fa',muted:'#9bb4bc',track:'#244550'};const bg=localStorage.getItem('fishBg')||v.bg,card=localStorage.getItem('fishCard')||v.card;v.bg=bg;v.card=card;Object.entries(v).forEach(([k,x])=>document.documentElement.style.setProperty('--'+k,x));document.documentElement.style.setProperty('--accent',a);document.querySelector('meta[name="theme-color"]').content=v.bg;localStorage.setItem('fishTheme',t)}
+applyTheme();
+$('theme').onchange=()=>{applyTheme();};$('timezone').onchange=()=>{localStorage.setItem('fishTz',$('timezone').value);renderDays();load()};document.querySelectorAll('.swatch').forEach(b=>b.onclick=()=>{localStorage.setItem('fishAccent',b.dataset.accent);$('accentColor').value=b.dataset.accent;applyTheme()});$('bgColor').onchange=()=>{localStorage.setItem('fishBg',$('bgColor').value);applyTheme()};$('cardColor').onchange=()=>{localStorage.setItem('fishCard',$('cardColor').value);applyTheme()};$('accentColor').onchange=()=>{localStorage.setItem('fishAccent',$('accentColor').value);applyTheme()};
+function tz(){return $('timezone').value==='local'?Intl.DateTimeFormat().resolvedOptions().timeZone:$('timezone').value}function iso(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}function clamp(x,a=0,b=100){return Math.max(a,Math.min(b,x))}function avg(a){a=(a||[]).filter(Number.isFinite);return a.reduce((x,y)=>x+y,0)/(a.length||1)}function fmtTime(d){return new Intl.DateTimeFormat('en-AU',{hour:'numeric',minute:'2-digit',timeZone:tz()}).format(d)}function scoreColour(s){return s>=75?'var(--good)':s>=55?'var(--mid)':'var(--bad)'}
+function moonPhase(date){const ref=Date.UTC(2000,0,6,18,14),syn=29.530588853,age=((date.getTime()-ref)/86400000%syn+syn)%syn,frac=age/syn,n=['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];return{age,frac,name:n[Math.floor(frac*8)],illum:(1-Math.cos(2*Math.PI*frac))/2}}
+function windScore(s){return s<=10?100:s<=15?88:s<=20?70:s<=25?45:s<=32?20:0}function swellScore(h){return h<=.6?100:h<=1?90:h<=1.5?70:h<=2?45:h<=3?20:0}function pressureScore(vals){if(vals.length<6)return{score:60,label:'Insufficient trend data'};const d=avg(vals.slice(-4))-avg(vals.slice(0,4));return d>2?{score:90,label:'Rising'}:d<-3?{score:78,label:'Falling'}:{score:66,label:'Stable'}}
+const BOM_TIDES={Geelong:{"2026-09-22":[["Low","04:15",.30],["High","10:49",.92],["Low","16:11",.59],["High","22:01",.92]],"2026-09-23":[["Low","05:00",.33],["High","11:41",.89],["Low","17:04",.60],["High","22:52",.88]],"2026-09-24":[["Low","05:56",.37],["High","12:45",.88],["Low","18:27",.59],["High","23:58",.85]],"2026-09-25":[["Low","07:22",.40],["High","13:55",.89],["Low","20:16",.53]],"2026-09-26":[["Low","01:48",.86],["Low","08:47",.40],["High","14:53",.92],["Low","21:17",.44]],"2026-09-27":[["High","03:15",.92],["Low","09:45",.40],["High","15:40",.95],["Low","22:06",.36]],"2026-09-28":[["High","04:15",1],["Low","10:34",.41],["High","16:19",.98],["Low","22:50",.30]]},"Point Lonsdale":{"2026-09-22":[["Low","00:17",.48],["High","07:27",1.33],["Low","12:35",.84],["High","18:50",1.27]],"2026-09-23":[["Low","01:01",.54],["High","08:28",1.28],["Low","13:28",.88],["High","19:53",1.21]],"2026-09-24":[["Low","01:57",.60],["High","09:33",1.27],["Low","14:38",.89],["High","21:15",1.19]],"2026-09-25":[["Low","03:09",.65],["High","10:34",1.30],["Low","16:15",.83],["High","22:38",1.24]],"2026-09-26":[["Low","04:37",.66],["High","11:27",1.35],["Low","17:29",.71],["High","23:46",1.35]],"2026-09-27":[["Low","05:45",.64],["High","12:13",1.41],["Low","18:12",.57]],"2026-09-28":[["High","00:43",1.48],["Low","06:33",.62],["High","12:54",1.47],["Low","18:48",.44]]}};
+function tideStation(name){return ['Queenscliff','Point Lonsdale','Torquay','Jan Juc','Anglesea','Aireys Inlet','Lorne'].includes(name)?'Point Lonsdale':'Geelong'}function tideData(name,date){const st=tideStation(name),rows=BOM_TIDES[st]?.[iso(date)]||[];return{station:st,extremes:rows.map(r=>{const [h,m]=r[1].split(':').map(Number);return{type:r[0],date:new Date(date.getFullYear(),date.getMonth(),date.getDate(),h,m),height:r[2]}})}}
+function tideScore(td){if(!td?.extremes?.length)return 55;let intervals=[];for(let i=0;i<td.extremes.length-1;i++)intervals.push((td.extremes[i+1].date-td.extremes[i].date)/3600000);const h=avg(intervals);return h>=3&&h<=7?90:h>=2?72:50}
+async function forecast(lat,lon,start){const d=iso(start),end=new Date(start);end.setDate(end.getDate()+6);const ed=iso(end);const timezone=encodeURIComponent(tz());const u=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation_probability,pressure_msl,wind_speed_10m,wind_gusts_10m,cloud_cover&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=${timezone}&start_date=${d}&end_date=${ed}`;const m=`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_period&daily=wave_height_max&timezone=${timezone}&start_date=${d}&end_date=${ed}`;const[a,b]=await Promise.all([fetch(u),fetch(m)]);if(!a.ok)throw Error('Weather service unavailable');return{w:await a.json(),m:b.ok?await b.json():null}}
+function dayData(i,wx,mx,name){const date=new Date(selectedDate);date.setDate(date.getDate()+i);const hourly=wx.hourly;const perDay=24;const vals=(key)=>hourly[key]?.slice(i*perDay,(i+1)*perDay)||[];const wind=avg(vals('wind_speed_10m')),rain=avg(vals('precipitation_probability')),cloud=avg(vals('cloud_cover')),press=pressureScore(vals('pressure_msl'));const wave=mx?.daily?.wave_height_max?.[i]??avg(mx?.hourly?.wave_height?.slice(i*perDay,(i+1)*perDay)||[1]);const td=tideData(name,date),t=tideScore(td),ws=windScore(wind),ss=swellScore(wave),rs=clamp(100-rain*1.15),cs=clamp(100-Math.abs(cloud-55)*1.5),light=92,ph=moonPhase(date),moon=ph.illum>.8?90:ph.illum>.45?72:58;const weights={tide:.23,wind:.18,swell:.14,pressure:.14,rain:.09,cloud:.06,light:.10,moon:.06};const sp=SPECIES[$('species').value];const adjT=clamp(t*sp.tide),adjW=clamp(ws*sp.wind),adjS=clamp(ss*sp.swell);const parts={tide:adjT,wind:adjW,swell:adjS,pressure:press.score,rain:rs,cloud:cs,light,moon};const score=Math.round(Object.keys(weights).reduce((sum,k)=>sum+parts[k]*weights[k],0));return{date,score,parts,weights,wind,gust:avg(vals('wind_gusts_10m')),rain,cloud,wave,pressure:press,pressureAvg:avg(vals('pressure_msl')),td,ph,sunrise:wx.w.daily?.sunrise?.[i],sunset:wx.w.daily?.sunset?.[i]}}
+function renderDays(){const max=Math.max(...week.map(x=>x.score)),min=Math.min(...week.map(x=>x.score));$('days').innerHTML=week.map((x,i)=>{const el=document.createElement('div');el.className='day '+(iso(x.date)===iso(selectedDate)?'active ':'')+(x.score===max?'best ':'')+(x.score===min?'worst':'');el.innerHTML=`<b>${x.date.toLocaleDateString('en-AU',{weekday:'short'})}</b><small>${x.date.getDate()}/${x.date.getMonth()+1}</small><div class="dscore">${x.score}</div>`;el.onclick=()=>{selectedDate=new Date(x.date);renderDays();renderSelected()};return el}).join('')}
+function renderSelected(){const c=week.find(x=>iso(x.date)===iso(selectedDate));if(!c)return;$('score').textContent=c.score;$('scoreRing').style.setProperty('--scoredeg',c.score*3.6+'deg');$('scoreRing').style.setProperty('--scorecolor',scoreColour(c.score));$('verdict').textContent=c.score>=80?'Excellent conditions':c.score>=65?'Good conditions':c.score>=50?'Fishable conditions':'Marginal conditions';$('summary').textContent=`${$('species').value} • ${$('spot').selectedOptions[0].text} • ${selectedDate.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',timeZone:tz()})}`;
+$('metrics').innerHTML=[['Wind',c.wind.toFixed(0)+' km/h'],['Gusts',c.gust.toFixed(0)+' km/h'],['Pressure',c.pressureAvg.toFixed(0)+' hPa'],['Trend',c.pressure.label],['Swell',c.wave.toFixed(1)+' m'],['Rain chance',c.rain.toFixed(0)+'%'],['Cloud',c.cloud.toFixed(0)+'%'],['Moon',c.ph.name]].map(x=>`<div class="metric"><span class="label">${x[0]}</span><b>${x[1]}</b></div>`).join('');
+const fmtApi=x=>x?x.slice(11,16):'--';$('moon').innerHTML=[['Sunrise',fmtApi(c.sunrise)],['Sunset',fmtApi(c.sunset)],['Moon phase',c.ph.name],['Illumination',Math.round(c.ph.illum*100)+'%']].map(x=>`<div class="metric"><span class="label">${x[0]}</span><b>${x[1]}</b></div>`).join('');
+$('tides').innerHTML=c.td.extremes.length?c.td.extremes.map(e=>`<div><span class="label">${e.type}</span><br><b>${fmtTime(e.date)}</b><br><span class="notice">${e.height.toFixed(2)} m</span></div>`).join(''):'<div>No embedded tide data for this date.</div>';$('tideNote').innerHTML=`BOM ${c.td.station} prediction • ${tz()} • actual water levels vary with weather. <a href="https://www.bom.gov.au/australia/tides/" target="_blank">BOM tide tables</a>.`;
+const wins=[];if(c.sunrise){const r=new Date(c.sunrise);wins.push({t:new Date(r.getTime()-45*60000),e:new Date(r.getTime()+90*60000),label:'Dawn'}); }if(c.sunset){const r=new Date(c.sunset);wins.push({t:new Date(r.getTime()-60*60000),e:new Date(r.getTime()+60*60000),label:'Dusk'});} $('windows').innerHTML=wins.map(x=>`<div class="window"><div><div class="time">${fmtTime(x.t)}–${fmtTime(x.e)}</div><span class="notice">${x.label}</span></div><span class="pill">PRIME</span></div>`).join('');
+const names={tide:'Tide movement',wind:'Wind',swell:'Swell',pressure:'Pressure trend',rain:'Rain',cloud:'Cloud/light',light:'Dawn & dusk',moon:'Moon'};$('breakdown').innerHTML=Object.keys(c.weights).map(k=>{const contribution=c.parts[k]*c.weights[k];return `<div class="scoreline"><span><b>${names[k]}</b> <span class="notice">${Math.round(c.parts[k])}/100</span></span><b>${contribution.toFixed(1)} pts</b><div class="bar"><i style="width:${c.parts[k]}%"></i></div></div>`}).join('');$('why').innerHTML=`<p><b>Final score: ${c.score}/100.</b> The weighting is Tide 23%, Wind 18%, Swell 14%, Pressure 14%, Rain 9%, Cloud 6%, Dawn/dusk 10%, Moon 6%.</p><p>The species selection adjusts tide, wind and swell sensitivity. The model is a practical heuristic and is not a scientifically validated prediction of catch rates.</p>`}
+async function load(){const[name,lat,lon]=SPOTS[$('spot').value];$('status').className='card notice loading';$('status').textContent=`Loading 7-day forecast for ${name}…`;$('content').style.display='none';try{const f=await forecast(lat,lon,selectedDate);week=[];for(let i=0;i<7;i++)week.push(dayData(i,f.w,f.m,name));renderDays();renderSelected();$('status').textContent=`Live weather/marine forecast loaded • ${new Date().toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'})}`;$('content').style.display='block'}catch(e){$('status').className='card notice error';$('status').textContent='Could not load live data: '+e.message}}
+$('spot').onchange=load;$('species').onchange=load;$('refresh').onclick=load;load();
+</script></body></html>

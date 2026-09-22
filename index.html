@@ -9,6 +9,11 @@
 
 .health-row{display:grid;grid-template-columns:28px minmax(90px,1fr) minmax(90px,2fr);gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(127,127,127,.18);font-size:.9rem}
 .health-row:last-child{border-bottom:0}
+
+.weight-grid{display:grid;grid-template-columns:minmax(100px,1fr) 70px;gap:8px 12px;align-items:center}
+.weight-grid input{width:100%;box-sizing:border-box}
+.setup-grid{display:grid;grid-template-columns:minmax(90px,1fr) minmax(120px,2fr);gap:7px 12px}
+.setup-grid div{padding:4px 0;border-bottom:1px solid rgba(127,127,127,.15)}
 </style></head>
 <body><div class="app">
 <header><div><h1>🎣 FishWindow</h1><div class="sub">Geelong • Bellarine • Surf Coast</div></div><button id="refresh">↻</button></header>
@@ -30,6 +35,23 @@
 const SPOTS=[["Geelong Waterfront",-38.1471,144.3607],["Cunningham Pier",-38.1436,144.3586],["Clifton Springs",-38.1557,144.5680],["Portarlington",-38.1165,144.6550],["St Leonards",-38.1680,144.7150],["Queenscliff",-38.2670,144.6620],["Point Lonsdale",-38.2870,144.6110],["Barwon Heads",-38.2670,144.4870],["Torquay",-38.3320,144.3260],["Anglesea",-38.4090,144.1850],["Aireys Inlet",-38.4610,144.1030],["Lorne",-38.5400,143.9760]];
 const SPECIES={"All species":{tide:1,wind:1,swell:1},"Snapper":{tide:1.2,wind:.9,swell:.8},"King George whiting":{tide:1.25,wind:.85,swell:.7},"Calamari":{tide:1.05,wind:.8,swell:.65},"Australian salmon":{tide:.9,wind:1.05,swell:1},"Flathead":{tide:1.15,wind:.95,swell:.75},"Gummy shark":{tide:1.2,wind:.85,swell:.9}};
 const $=id=>document.getElementById(id); let selectedDate=new Date();selectedDate.setHours(0,0,0,0);let week=[];
+    const wd=f?.w?.daily;
+    const wh=f?.w?.hourly;
+    if(!wd || !Array.isArray(wd.time)) throw Error("7-day forecast data is unavailable");
+    for(let i=0;i<Math.min(7,wd.time.length);i++){
+      week.push({
+        date:wd.time[i],
+        sunrise:wd.sunrise?.[i] ?? null,
+        sunset:wd.sunset?.[i] ?? null,
+        tmax:wd.temperature_2m_max?.[i] ?? null,
+        tmin:wd.temperature_2m_min?.[i] ?? null,
+        rain:wd.precipitation_sum?.[i] ?? 0,
+        wind:wd.wind_speed_10m_max?.[i] ?? null,
+        gust:wd.wind_gusts_10m_max?.[i] ?? null,
+        cloud:wd.cloud_cover_mean?.[i] ?? null,
+        pressure:wd.surface_pressure_mean?.[i] ?? null
+      });
+    }
 SPOTS.forEach((s,i)=>$("spot").add(new Option(s[0],i)));Object.keys(SPECIES).forEach(s=>$('species').add(new Option(s)));$('spot').value=0;
 const saved={tz:localStorage.getItem('fishTz')||'Australia/Melbourne',theme:localStorage.getItem('fishTheme')||'ocean',accent:localStorage.getItem('fishAccent')||'#48d7a7',bg:localStorage.getItem('fishBg')||'',card:localStorage.getItem('fishCard')||''};$('timezone').value=saved.tz;$('theme').value=saved.theme;if(saved.bg)$('bgColor').value=saved.bg;if(saved.card)$('cardColor').value=saved.card;$('accentColor').value=saved.accent;
 function applyTheme(){const t=$('theme').value,a=localStorage.getItem('fishAccent')||saved.accent;let v;if(t==='light')v={bg:'#eef4f5',card:'#fff',card2:'#e2edf0',text:'#10252d',muted:'#597078',track:'#c3d4d9'};else if(t==='sand')v={bg:'#29231b',card:'#3c3022',card2:'#51422e',text:'#fff8ea',muted:'#cbbda5',track:'#68583f'};else v=t==='dark'?{bg:'#05070a',card:'#10151b',card2:'#1a222b',text:'#f1f4f6',muted:'#9ba8b2',track:'#303b44'}:{bg:'#071923',card:'#0e2b38',card2:'#123744',text:'#eef8fa',muted:'#9bb4bc',track:'#244550'};const bg=localStorage.getItem('fishBg')||v.bg,card=localStorage.getItem('fishCard')||v.card;v.bg=bg;v.card=card;Object.entries(v).forEach(([k,x])=>document.documentElement.style.setProperty('--'+k,x));document.documentElement.style.setProperty('--accent',a);document.querySelector('meta[name="theme-color"]').content=v.bg;localStorage.setItem('fishTheme',t)}
@@ -82,10 +104,149 @@ function fwSafeScore(v, fallback=50){
   return Number.isFinite(n)?Math.max(0,Math.min(100,n)):fallback;
 }
 </script>
+
+<script>
+function fwDayLabel(iso){
+  try{return new Date(iso+'T12:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});}
+  catch(e){return iso||'Day';}
+}
+</script>
+
+<script>
+/* FishWindow v6: user-tunable score weights + practical tackle advice */
+const FW_DEFAULT_WEIGHTS = {
+  tide:23, wind:18, swell:14, pressure:14, rain:9, cloud:6, light:10, moon:6
+};
+const FW_WEIGHT_LABELS = {
+  tide:"Tide movement", wind:"Wind", swell:"Swell", pressure:"Pressure trend",
+  rain:"Rain", cloud:"Cloud / light", light:"Dawn & dusk", moon:"Moon / solunar"
+};
+const FW_SETUP = {
+  "Snapper":{
+    bait:"Pilchard, squid strips, fresh salmon/trout strips or fresh cut bait",
+    main:"10–20 lb braid",
+    leader:"15–25 lb fluorocarbon/mono",
+    rig:"Running sinker rig or paternoster; circle hook around 1/0–3/0 where appropriate",
+    notes:"Use the lightest sinker that holds bottom. Increase leader strength around reef/structure."
+  },
+  "Whiting":{
+    bait:"Pipis, mussel, squid or small pieces of fresh bait",
+    main:"4–8 lb braid/mono",
+    leader:"4–8 lb fluorocarbon/mono",
+    rig:"Light running sinker rig; small long-shank or circle-style hook",
+    notes:"Keep the presentation light and close to the bottom. Use minimal sinker weight in calm water."
+  },
+  "Flathead":{
+    bait:"Pilchard, squid, fish strips or small soft plastics",
+    main:"6–12 lb braid",
+    leader:"8–15 lb fluorocarbon/mono",
+    rig:"Running sinker rig, paternoster or lightly weighted soft plastic",
+    notes:"Fish channels, drop-offs and sandy edges of structure; increase leader around snags."
+  },
+  "Australian salmon":{
+    bait:"Pilchard strips or small metal/lure presentation",
+    main:"8–15 lb braid",
+    leader:"10–20 lb fluorocarbon/mono",
+    rig:"Small gang hook or lure; tailor weight to surf/current",
+    notes:"For bait, keep the presentation streamlined. Watch birds and surface activity."
+  },
+  "Bream":{
+    bait:"Prawn, worms, mussel or small fresh bait",
+    main:"3–6 lb braid",
+    leader:"4–8 lb fluorocarbon",
+    rig:"Very light running sinker or float rig with small hook",
+    notes:"Light leader and subtle presentations are useful in clear, calm water."
+  }
+};
+
+function fwLoadWeights(){
+  try{return Object.assign({},FW_DEFAULT_WEIGHTS,JSON.parse(localStorage.getItem("fishwindowWeights")||"{}"))}
+  catch(e){return {...FW_DEFAULT_WEIGHTS}}
+}
+function fwSaveWeights(w){localStorage.setItem("fishwindowWeights",JSON.stringify(w))}
+function fwNormalisedWeights(){
+  const w=fwLoadWeights(), total=Object.values(w).reduce((a,b)=>a+Number(b||0),0)||1;
+  return Object.fromEntries(Object.entries(w).map(([k,v])=>[k,Number(v||0)/total]));
+}
+function fwRenderWeights(){
+  const box=document.getElementById("weightControls"), totalEl=document.getElementById("weightTotal");
+  if(!box)return;
+  const w=fwLoadWeights();
+  box.innerHTML='<div class="weight-grid">'+Object.entries(w).map(([k,v])=>
+    `<label for="fw-w-${k}">${FW_WEIGHT_LABELS[k]}</label><input id="fw-w-${k}" type="number" min="0" max="100" step="1" value="${v}">`
+  ).join('')+'</div>';
+  const update=()=>{
+    const nw={};
+    Object.keys(FW_DEFAULT_WEIGHTS).forEach(k=>nw[k]=Math.max(0,Number(document.getElementById("fw-w-"+k)?.value||0)));
+    fwSaveWeights(nw);
+    const t=Object.values(nw).reduce((a,b)=>a+b,0);
+    if(totalEl)totalEl.textContent=`Entered total: ${t}%. Final scoring automatically normalises these values to 100%.`;
+  };
+  Object.keys(FW_DEFAULT_WEIGHTS).forEach(k=>document.getElementById("fw-w-"+k)?.addEventListener("input",update));
+  update();
+}
+function fwRenderSetup(){
+  const el=document.getElementById("setupAdvice");
+  if(!el)return;
+  let species=(typeof speciesSelect!=="undefined" && speciesSelect?.value) ? speciesSelect.value : "";
+  if(!species || !FW_SETUP[species]){
+    el.innerHTML="<p>Select a supported species to display bait, line and rig advice.</p>";
+    return;
+  }
+  const s=FW_SETUP[species];
+  el.innerHTML=`<div class="setup-grid">
+    <div><strong>Bait</strong></div><div>${s.bait}</div>
+    <div><strong>Main line</strong></div><div>${s.main}</div>
+    <div><strong>Leader</strong></div><div>${s.leader}</div>
+    <div><strong>Rig / hook</strong></div><div>${s.rig}</div>
+    <div><strong>Conditions</strong></div><div>${s.notes}</div>
+  </div>`;
+}
+document.addEventListener("DOMContentLoaded",()=>{
+  fwRenderWeights(); fwRenderSetup();
+  document.getElementById("resetWeights")?.addEventListener("click",()=>{
+    fwSaveWeights({...FW_DEFAULT_WEIGHTS}); fwRenderWeights();
+    if(typeof render==="function")try{render()}catch(e){}
+  });
+  if(typeof speciesSelect!=="undefined" && speciesSelect){
+    speciesSelect.addEventListener("change",fwRenderSetup);
+  }
+});
+</script>
+
+<script>
+function fwWeightedScore(parts){
+  const w=fwNormalisedWeights();
+  return Math.round(
+    (fwSafeScore(parts.tide)*w.tide)+
+    (fwSafeScore(parts.wind)*w.wind)+
+    (fwSafeScore(parts.swell)*w.swell)+
+    (fwSafeScore(parts.pressure)*w.pressure)+
+    (fwSafeScore(parts.rain)*w.rain)+
+    (fwSafeScore(parts.cloud)*w.cloud)+
+    (fwSafeScore(parts.light)*w.light)+
+    (fwSafeScore(parts.moon)*w.moon)
+  );
+}
+</script>
 </body></html>
 
 <section class="card" id="dataHealthCard">
   <h2>Data health & confidence</h2>
   <div id="dataHealth">Checking live sources…</div>
   <p class="muted">The fishing score uses available live weather/marine data and BOM tide predictions. If a source is unavailable, it is excluded rather than crashing the app.</p>
+</section>
+
+<section class="card" id="weightSettingsCard">
+  <h2>Scoring weights</h2>
+  <p class="muted">Adjust how strongly each factor affects the fishing score. The weights are automatically normalised to 100%.</p>
+  <div id="weightControls"></div>
+  <div id="weightTotal" class="muted"></div>
+  <button type="button" id="resetWeights">Reset to default</button>
+</section>
+
+<section class="card" id="setupAdviceCard">
+  <h2>Bait & line setup</h2>
+  <div id="setupAdvice">Select a species to see a practical setup.</div>
+  <p class="muted">These are starting-point recommendations; adjust hook, leader and sinker size for depth, structure, current and local regulations.</p>
 </section>

@@ -41,12 +41,34 @@
 <label>Background<input id="bg" type="color" value="#071923"></label><label>Cards<input id="card" type="color" value="#0e2b38"></label>
 </div></section>
 
-<footer class="small">Weather: Open-Meteo with MET Norway fallback where available. Tides: BOM published Victorian tide predictions. Tide predictions can differ from actual water levels due to weather and pressure.</footer>
+<footer class="small">Weather: multi-model consensus (Open-Meteo/BOM ACCESS/ECMWF/GFS where available). Tides: BOM predictions with Open-Meteo marine model cross-check. WillyWeather is provided as an independent reference. Predictions can differ from actual conditions.</footer>
 </main>
 <script>
-const SPOTS=[["Geelong Waterfront", -38.1471, 144.3607], ["Cunningham Pier", -38.1436, 144.3586], ["Clifton Springs", -38.1557, 144.568], ["Portarlington", -38.1165, 144.655], ["St Leonards", -38.168, 144.715], ["Queenscliff", -38.267, 144.662], ["Point Lonsdale", -38.287, 144.611], ["Barwon Heads", -38.267, 144.487], ["Torquay", -38.332, 144.326], ["Anglesea", -38.409, 144.185], ["Aireys Inlet", -38.461, 144.103], ["Lorne", -38.54, 143.976]];
-const SPECIES={"All species": {"tide": 1, "wind": 1, "swell": 1}, "Snapper": {"tide": 1.2, "wind": 0.9, "swell": 0.8}, "King George whiting": {"tide": 1.25, "wind": 0.85, "swell": 0.7}, "Calamari": {"tide": 1.05, "wind": 0.8, "swell": 0.65}, "Australian salmon": {"tide": 0.9, "wind": 1.05, "swell": 1}, "Flathead": {"tide": 1.15, "wind": 0.95, "swell": 0.75}, "Gummy shark": {"tide": 1.2, "wind": 0.85, "swell": 0.9}};
-const BOM_TIDES={Geelong:{"2026-09-22":[["Low","04:15",.30],["High","10:49",.92],["Low","16:11",.59],["High","22:01",.92]],"2026-09-23":[["Low","05:00",.33],["High","11:41",.89],["Low","17:04",.60],["High","22:52",.88]],"2026-09-24":[["Low","05:56",.37],["High","12:45",.88],["Low","18:27",.59],["High","23:58",.85]],"2026-09-25":[["Low","07:22",.40],["High","13:55",.89],["Low","20:16",.53]],"2026-09-26":[["Low","01:48",.86],["Low","08:47",.40],["High","14:53",.92],["Low","21:17",.44]],"2026-09-27":[["High","03:15",.92],["Low","09:45",.40],["High","15:40",.95],["Low","22:06",.36]],"2026-09-28":[["High","04:15",1],["Low","10:34",.41],["High","16:19",.98],["Low","22:50",.30]]},"Point Lonsdale":{"2026-09-22":[["Low","00:17",.48],["High","07:27",1.33],["Low","12:35",.84],["High","18:50",1.27]],"2026-09-23":[["Low","01:01",.54],["High","08:28",1.28],["Low","13:28",.88],["High","19:53",1.21]],"2026-09-24":[["Low","01:57",.60],["High","09:33",1.27],["Low","14:38",.89],["High","21:15",1.19]],"2026-09-25":[["Low","03:09",.65],["High","10:34",1.30],["Low","16:15",.83],["High","22:38",1.24]],"2026-09-26":[["Low","04:37",.66],["High","11:27",1.35],["Low","17:29",.71],["High","23:46",1.35]],"2026-09-27":[["Low","05:45",.64],["High","12:13",1.41],["Low","18:12",.57]],"2026-09-28":[["High","00:43",1.48],["Low","06:33",.62],["High","12:54",1.47],["Low","18:48",.44]]}};
+const SPOTS=[
+["Geelong Waterfront",-38.1471,144.3607],["Cunningham Pier",-38.1436,144.3586],
+["Clifton Springs",-38.1557,144.568],["Portarlington",-38.1165,144.655],
+["St Leonards",-38.168,144.715],["Queenscliff",-38.267,144.662],
+["Point Lonsdale",-38.287,144.611],["Barwon Heads",-38.267,144.487],
+["Torquay",-38.332,144.326],["Anglesea",-38.409,144.185],
+["Aireys Inlet",-38.461,144.103],["Lorne",-38.54,143.976]
+];
+const SPECIES={
+"All species":{tide:1,wind:1,swell:1},"Snapper":{tide:1.2,wind:.9,swell:.8},
+"King George whiting":{tide:1.25,wind:.85,swell:.7},"Calamari":{tide:1.05,wind:.8,swell:.65},
+"Australian salmon":{tide:.9,wind:1.05,swell:1},"Flathead":{tide:1.15,wind:.95,swell:.75},
+"Gummy shark":{tide:1.2,wind:.85,swell:.9}
+};
+
+/* BOM-published Victorian tide predictions currently embedded for the active 7-day
+   period. The app never substitutes another station silently. */
+const BOM_TIDES={
+"Geelong":{"2026-09-22":[["Low","04:15",.30],["High","10:49",.92],["Low","16:11",.59],["High","22:01",.92]],"2026-09-23":[["Low","05:00",.33],["High","11:41",.89],["Low","17:04",.60],["High","22:52",.88]],"2026-09-24":[["Low","05:56",.37],["High","12:45",.88],["Low","18:27",.59],["High","23:58",.85]],"2026-09-25":[["Low","07:22",.40],["High","13:55",.89],["Low","20:16",.53]],"2026-09-26":[["High","01:48",.86],["Low","08:47",.40],["High","14:53",.92],["Low","21:17",.44]],"2026-09-27":[["High","03:15",.92],["Low","09:45",.40],["High","15:40",.95],["Low","22:06",.36]],"2026-09-28":[["High","04:15",1.00],["Low","10:34",.41],["High","16:19",.98],["Low","22:50",.30]]},
+"Point Lonsdale":{"2026-09-22":[["Low","00:17",.48],["High","07:27",1.33],["Low","12:35",.84],["High","18:50",1.27]],"2026-09-23":[["Low","01:01",.54],["High","08:28",1.28],["Low","13:28",.88],["High","19:53",1.21]],"2026-09-24":[["Low","01:57",.60],["High","09:33",1.27],["Low","14:38",.89],["High","21:15",1.19]],"2026-09-25":[["Low","03:09",.65],["High","10:34",1.30],["Low","16:15",.83],["High","22:38",1.24]],"2026-09-26":[["Low","04:37",.66],["High","11:27",1.35],["Low","17:29",.71],["High","23:46",1.35]],"2026-09-27":[["Low","05:45",.64],["High","12:13",1.41],["Low","18:12",.57]],"2026-09-28":[["High","00:43",1.48],["Low","06:33",.62],["High","12:54",1.47],["Low","18:48",.44]]},
+"Corio Bay (Point Richards)":{"2026-09-22":[["Low","03:52",.30],["High","10:41",.85],["Low","15:56",.58],["High","21:35",.86]],"2026-09-23":[["Low","04:40",.33],["High","11:36",.83],["Low","16:54",.59],["High","22:33",.82]],"2026-09-24":[["Low","05:41",.35],["High","12:39",.82],["Low","18:20",.57],["High","23:53",.79]],"2026-09-25":[["Low","07:02",.38],["High","13:40",.83],["Low","19:50",.51]],"2026-09-26":[["High","01:29",.80],["Low","08:20",.39],["High","14:30",.85],["Low","20:51",.44]],"2026-09-27":[["High","02:49",.86],["Low","09:20",.40],["High","15:13",.87],["Low","21:40",.36]],"2026-09-28":[["High","03:49",.92],["Low","10:09",.42],["High","15:49",.90],["Low","22:23",.31]]},
+"Lorne":{"2026-09-22":[["Low","00:48",.34],["High","08:36",.87],["Low","12:53",.64],["High","19:25",.90]],"2026-09-23":[["Low","01:32",.38],["High","09:30",.85],["Low","13:45",.66],["High","20:17",.87]],"2026-09-24":[["Low","02:26",.42],["High","10:30",.84],["Low","14:59",.66],["High","21:24",.84]],"2026-09-25":[["Low","03:39",.46],["High","11:28",.86],["Low","17:17",.60],["High","22:59",.84]],"2026-09-26":[["Low","05:30",.47],["High","12:16",.88],["Low","18:14",.50]],"2026-09-27":[["High","00:29",.89],["Low","06:30",.46],["High","12:56",.91],["Low","18:54",.41]],"2026-09-28":[["High","01:32",.95],["Low","07:14",.46],["High","13:30",.94],["Low","19:30",.32]]},
+"Queenscliff":{"2026-09-22":[["Low","03:31",.28],["High","10:40",.75],["Low","15:40",.54],["High","21:15",.76]],"2026-09-23":[["Low","04:26",.29],["High","11:38",.73],["Low","16:50",.54],["High","22:15",.72]],"2026-09-24":[["Low","05:34",.31],["High","12:37",.72],["Low","18:22",.51],["High","23:43",.69]],"2026-09-25":[["Low","06:50",.33],["High","13:30",.73],["Low","19:34",.46]],"2026-09-26":[["High","01:17",.70],["Low","07:58",.35],["High","14:16",.75],["Low","20:29",.39]],"2026-09-27":[["High","02:30",.75],["Low","08:54",.37],["High","14:55",.76],["Low","21:14",.33]],"2026-09-28":[["High","03:30",.80],["Low","09:42",.39],["High","15:30",.78],["Low","21:54",.28]]}
+};
+
 const SETUPS={
 "All species":{bait:"Select a species for a more specific setup.",main:"—",leader:"—",rig:"—"},
 "Snapper":{bait:"Pilchard, squid, fresh cut bait",main:"10–20 lb braid",leader:"15–25 lb mono/fluoro",rig:"Running sinker or paternoster; ~1/0–3/0 hook",notes:"Use the lightest sinker that holds bottom."},
@@ -58,7 +80,7 @@ const SETUPS={
 };
 const DEFAULT={tide:23,wind:18,swell:14,pressure:14,rain:9,cloud:6,light:10,moon:6};
 let weights=JSON.parse(localStorage.getItem("fwWeights")||"null")||{...DEFAULT};
-let selected=0,week=[], sourceInfo={weather:false,marine:false,fallback:false};
+let selected=0,week=[],sourceInfo={};
 
 const $=id=>document.getElementById(id);
 SPOTS.forEach((x,i)=>$('spot').add(new Option(x[0],i)));
@@ -67,39 +89,137 @@ $('species').value=localStorage.getItem("fwSpecies")||"All species";
 $('spot').value=localStorage.getItem("fwSpot")||0;
 $('timezone').value=localStorage.getItem("fwTz")||"Australia/Melbourne";
 $('theme').value=localStorage.getItem("fwTheme")||"ocean";
-$('bg').value=localStorage.getItem("fwBg")||"#071923"; $('card').value=localStorage.getItem("fwCard")||"#0e2b38";
+$('bg').value=localStorage.getItem("fwBg")||"#071923";
+$('card').value=localStorage.getItem("fwCard")||"#0e2b38";
 
 function tz(){return $('timezone').value}
 function dateISO(d){return new Intl.DateTimeFormat('en-CA',{timeZone:tz(),year:'numeric',month:'2-digit',day:'2-digit'}).format(d)}
-function localDate(i){const a=dateISO(new Date());const [y,m,d]=a.split('-').map(Number);return new Date(y,m-1,d+i,12,0,0)}
+function localDate(i){const a=dateISO(new Date()),[y,m,d]=a.split('-').map(Number);return new Date(y,m-1,d+i,12)}
 function clamp(x,a=0,b=100){return Math.max(a,Math.min(b,Number.isFinite(x)?x:a))}
-function avg(a){const v=(a||[]).filter(x=>Number.isFinite(x));return v.length?v.reduce((a,b)=>a+b,0)/v.length:null}
-function fmtTime(x){if(!x)return'—';const d=new Date(x);return new Intl.DateTimeFormat('en-AU',{hour:'numeric',minute:'2-digit',timeZone:tz()}).format(d)}
+function avg(a){const v=(a||[]).filter(Number.isFinite);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null}
+function fmtTime(x){if(!x)return'—';return new Intl.DateTimeFormat('en-AU',{hour:'numeric',minute:'2-digit',timeZone:tz()}).format(new Date(x))}
 function scoreColour(s){return s>=75?'var(--good)':s>=55?'var(--mid)':'var(--bad)'}
 function phase(d){const ref=Date.UTC(2000,0,6,18,14),syn=29.530588853,age=((d.getTime()-ref)/86400000%syn+syn)%syn,f=age/syn;const names=['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];return{name:names[Math.floor(f*8)],illum:(1-Math.cos(2*Math.PI*f))/2}}
-function tideStation(name){return ['Queenscliff','Point Lonsdale','Torquay','Anglesea','Aireys Inlet','Lorne'].includes(name)?'Point Lonsdale':'Geelong'}
-function tides(name,d){const st=tideStation(name),key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,rows=BOM_TIDES[st]?.[key]||[];return{station:st,rows:rows.map(r=>{const [h,m]=r[1].split(':').map(Number),x=new Date(d);x.setHours(h,m,0,0);return{type:r[0],time:x,height:r[2]}})}}
-function tideScore(t){if(!t.rows.length)return 55;const gaps=t.rows.slice(0,-1).map((x,i)=>(t.rows[i+1].time-x.time)/36e5);const g=avg(gaps)||4;return g>=3&&g<=7?90:g>=2?72:50}
+function tideStation(name){
+if(['Geelong Waterfront','Cunningham Pier'].includes(name))return'Geelong';
+if(['Clifton Springs','Portarlington'].includes(name))return'Corio Bay (Point Richards)';
+if(name==='St Leonards')return'St Leonards';
+if(name==='Queenscliff')return'Queenscliff';
+if(name==='Point Lonsdale')return'Point Lonsdale';
+if(name==='Barwon Heads')return'Barwon Heads';
+if(name==='Lorne')return'Lorne';
+return'Point Lonsdale';
+}
+function tideRows(name,date){
+const st=tideStation(name),raw=BOM_TIDES[st]?.[dateISO(date)]||[];
+return{station:st,rows:raw.map(r=>{const [h,m]=r[1].split(':').map(Number),d=new Date(date.getFullYear(),date.getMonth(),date.getDate(),h,m);return{type:r[0],time:d,height:r[2]}})};
+}
+function tideScore(t){if(!t.rows.length)return 55;const gaps=t.rows.slice(0,-1).map((x,i)=>(t.rows[i+1].time-x.time)/36e5),g=avg(gaps)||4;return g>=3&&g<=7?90:g>=2?72:50}
 function windScore(v){return v==null?55:v<=10?100:v<=15?88:v<=20?70:v<=25?45:v<=32?20:0}
 function swellScore(v){return v==null?55:v<=.6?100:v<=1?90:v<=1.5?70:v<=2?45:v<=3?20:0}
 function normWeights(){const t=Object.values(weights).reduce((a,b)=>a+Math.max(0,+b||0),0)||1;return Object.fromEntries(Object.entries(weights).map(([k,v])=>[k,Math.max(0,+v||0)/t]))}
-async function jsonFetch(url,timeout=12000){const c=new AbortController(),id=setTimeout(()=>c.abort(),timeout);try{const r=await fetch(url,{cache:'no-store',signal:c.signal});if(!r.ok)throw Error(`HTTP ${r.status}`);return await r.json()}finally{clearTimeout(id)}}
-async function openMeteo(lat,lon){const start=dateISO(new Date()),end=dateISO(new Date(Date.now()+6*864e5)),z=encodeURIComponent(tz());const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation_probability,pressure_msl,wind_speed_10m,wind_gusts_10m,cloud_cover&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=${z}&forecast_days=7`;const murl=`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_period&daily=wave_height_max&timezone=${z}&forecast_days=7`;const [w,m]=await Promise.all([jsonFetch(url),jsonFetch(murl).catch(()=>null)]);if(!w.daily?.time||!w.hourly?.time)throw Error("Incomplete Open-Meteo forecast");return{w,m,source:"Open-Meteo"}}
-async function metNorway(lat,lon){const url=`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;const x=await jsonFetch(url);if(!x.properties?.timeseries?.length)throw Error("Incomplete MET forecast");return{x,source:"MET Norway"}}
-function metFallbackData(x){const ts=x.properties.timeseries,by={};for(const q of ts){const d=q.time.slice(0,10);(by[d]??=[]).push(q)}return Object.keys(by).slice(0,7).map(d=>{const a=by[d];const vals=k=>a.map(q=>q.data?.instant?.details?.[k]).filter(Number.isFinite);return{date:d,tmax:Math.max(...vals('air_temperature')),tmin:Math.min(...vals('air_temperature')),wind:avg(vals('wind_speed')),gust:avg(vals('wind_speed_of_gust')),pressure:avg(vals('air_pressure_at_sea_level')),rain:avg(a.map(q=>q.data?.next_1_hours?.details?.precipitation_amount).filter(Number.isFinite)),cloud:avg(vals('cloud_area_fraction'))}})}
-function buildDay(i,wx,marine,name){const d=localDate(i), key=dateISO(d), h=wx?.w?.hourly, daily=wx?.w?.daily;let wind=avg(h?.wind_speed_10m?.slice(i*24,(i+1)*24)),gust=avg(h?.wind_gusts_10m?.slice(i*24,(i+1)*24)),rain=avg(h?.precipitation_probability?.slice(i*24,(i+1)*24)),cloud=avg(h?.cloud_cover?.slice(i*24,(i+1)*24)),pressure=avg(h?.pressure_msl?.slice(i*24,(i+1)*24));let wave=marine?.daily?.wave_height_max?.[i]??avg(marine?.hourly?.wave_height?.slice(i*24,(i+1)*24));const td=tides(name,d),ph=phase(d),sp=SPECIES[$('species').value],parts={tide:clamp(tideScore(td)*(sp.tide||1)),wind:windScore(wind)*(sp.wind||1),swell:swellScore(wave)*(sp.swell||1),pressure:pressure==null?60:65,rain:rain==null?60:clamp(100-rain*1.15),cloud:cloud==null?60:clamp(100-Math.abs(cloud-55)*1.5),light:92,moon:ph.illum>.8?90:ph.illum>.45?72:58};const nw=normWeights(),score=Math.round(Object.keys(nw).reduce((a,k)=>a+clamp(parts[k])*nw[k],0));return{date:d,key,score,parts,nw,wind,gust,rain,cloud,pressure,wave,td,ph,sunrise:daily?.sunrise?.[i],sunset:daily?.sunset?.[i],tmax:daily?.temperature_2m_max?.[i],tmin:daily?.temperature_2m_min?.[i]}}
+async function jsonFetch(url,timeout=14000){const c=new AbortController(),id=setTimeout(()=>c.abort(),timeout);try{const r=await fetch(url,{cache:'no-store',signal:c.signal});if(!r.ok)throw Error(`HTTP ${r.status}`);return await r.json()}finally{clearTimeout(id)}}
+
+function weatherUrl(base,lat,lon,model){
+const z=encodeURIComponent(tz());
+return `${base}?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation_probability,pressure_msl,wind_speed_10m,wind_gusts_10m,cloud_cover&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=${z}&forecast_days=7${model?'&models='+model:''}`;
+}
+async function fetchWeatherModels(lat,lon){
+const defs=[
+["Best match","https://api.open-meteo.com/v1/forecast","best_match"],
+["BOM ACCESS-G","https://api.open-meteo.com/v1/forecast","bom_access_global"],
+["ECMWF IFS","https://api.open-meteo.com/v1/forecast","ecmwf_ifs"],
+["NOAA GFS","https://api.open-meteo.com/v1/forecast","ncep_gfs_global"]
+];
+const results=await Promise.all(defs.map(async d=>{try{const x=await jsonFetch(weatherUrl(d[1],lat,lon,d[2]));if(!x.hourly?.time)return null;return{name:d[0],x}}catch(e){return{name:d[0],error:e.message}}}));
+return results.filter(Boolean);
+}
+async function fetchMarineModels(lat,lon){
+const z=encodeURIComponent(tz()),base=`latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_period,sea_level_height_msl&daily=wave_height_max,swell_wave_height_max&timezone=${z}&forecast_days=7`;
+const defs=[
+["Marine best match","https://marine-api.open-meteo.com/v1/marine",base],
+["ECMWF WAM","https://marine-api.open-meteo.com/v1/marine",base+"&models=ecmwf_wam025"],
+["GFS Wave","https://marine-api.open-meteo.com/v1/marine",base+"&models=ncep_gfswave025"]
+];
+return (await Promise.all(defs.map(async d=>{try{return{name:d[0],x:await jsonFetch(d[1]+"?"+d[2])}}catch(e){return{name:d[0],error:e.message}}}))).filter(Boolean);
+}
+function consensus(arr,key,i){
+const vals=arr.map(q=>q?.x?.hourly?.[key]?.slice(i*24,(i+1)*24)).map(avg).filter(Number.isFinite);
+return vals.length?avg(vals):null;
+}
+function dailyConsensus(arr,key,i){
+const vals=arr.map(q=>q?.x?.daily?.[key]?.[i]).filter(Number.isFinite);
+return vals.length?avg(vals):null;
+}
+function modelSpread(arr,key,i){
+const vals=arr.map(q=>avg(q?.x?.hourly?.[key]?.slice(i*24,(i+1)*24))).filter(Number.isFinite);
+return vals.length>1?Math.max(...vals)-Math.min(...vals):0;
+}
+function buildDay(i,models,marine,name){
+const d=localDate(i),h=models[0]?.x?.hourly,daily=models[0]?.x?.daily;
+const wind=consensus(models,'wind_speed_10m',i),gust=consensus(models,'wind_gusts_10m',i),rain=consensus(models,'precipitation_probability',i),cloud=consensus(models,'cloud_cover',i),pressure=consensus(models,'pressure_msl',i);
+const wave=dailyConsensus(marine,'wave_height_max',i);
+const td=tideRows(name,d),ph=phase(d),sp=SPECIES[$('species').value];
+const parts={tide:clamp(tideScore(td)*(sp.tide||1)),wind:windScore(wind)*(sp.wind||1),swell:swellScore(wave)*(sp.swell||1),pressure:pressure==null?60:65,rain:rain==null?60:clamp(100-rain*1.15),cloud:cloud==null?60:clamp(100-Math.abs(cloud-55)*1.5),light:92,moon:ph.illum>.8?90:ph.illum>.45?72:58};
+const nw=normWeights(),score=Math.round(Object.keys(nw).reduce((a,k)=>a+clamp(parts[k])*nw[k],0));
+return{date:d,key:dateISO(d),score,parts,nw,wind,gust,rain,cloud,pressure,wave,td,ph,
+sunrise:daily?.sunrise?.[i],sunset:daily?.sunset?.[i],tmax:daily?.temperature_2m_max?.[i],tmin:daily?.temperature_2m_min?.[i],
+windSpread:modelSpread(models,'wind_speed_10m',i),rainSpread:modelSpread(models,'precipitation_probability',i),pressureSpread:modelSpread(models,'pressure_msl',i),
+marineWaveSpread:marine.length>1?Math.max(...marine.map(q=>q.x?.daily?.wave_height_max?.[i]).filter(Number.isFinite))-Math.min(...marine.map(q=>q.x?.daily?.wave_height_max?.[i]).filter(Number.isFinite)):0};
+}
 function renderDays(){const mx=Math.max(...week.map(x=>x.score)),mn=Math.min(...week.map(x=>x.score));$('days').innerHTML=week.map((x,i)=>`<div class="day ${i===selected?'active ':''}${x.score===mx?'best ':''}${x.score===mn?'worst':''}" data-i="${i}"><b>${x.date.toLocaleDateString('en-AU',{weekday:'short'})}</b><small>${x.date.getDate()}/${x.date.getMonth()+1}</small><div class="dscore" style="color:${scoreColour(x.score)}">${x.score}</div></div>`).join('');document.querySelectorAll('.day').forEach(e=>e.onclick=()=>{selected=+e.dataset.i;renderDays();renderDetail()})}
-function renderDetail(){const c=week[selected];if(!c)return;$('detail').style.display='block';$('score').textContent=c.score;$('score').style.color=scoreColour(c.score);$('verdict').textContent=c.score>=80?'Excellent conditions':c.score>=65?'Good conditions':c.score>=50?'Fishable conditions':'Marginal conditions';$('summary').textContent=`${SPECIES[$('species').value]?'':'All'}${$('species').value} • ${$('spot').selectedOptions[0].text} • ${c.date.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'})}`;
-$('metrics').innerHTML=[['Max / min',`${c.tmax??'—'}° / ${c.tmin??'—'}°C`],['Wind',c.wind==null?'—':c.wind.toFixed(0)+' km/h'],['Gusts',c.gust==null?'—':c.gust.toFixed(0)+' km/h'],['Pressure',c.pressure==null?'—':c.pressure.toFixed(0)+' hPa'],['Swell',c.wave==null?'—':c.wave.toFixed(1)+' m'],['Rain chance',c.rain==null?'—':c.rain.toFixed(0)+'%'],['Cloud',c.cloud==null?'—':c.cloud.toFixed(0)+'%'],['Moon',c.ph.name]].map(x=>`<div class="metric"><span class="label">${x[0]}</span><b>${x[1]}</b></div>`).join('');
+function renderDetail(){
+const c=week[selected];if(!c)return;
+$('detail').style.display='block';$('score').textContent=c.score;$('score').style.color=scoreColour(c.score);
+$('verdict').textContent=c.score>=80?'Excellent conditions':c.score>=65?'Good conditions':c.score>=50?'Fishable conditions':'Marginal conditions';
+$('summary').textContent=`${$('species').value} • ${$('spot').selectedOptions[0].text} • ${c.date.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'})}`;
+$('metrics').innerHTML=[['Max / min',(c.tmax??'—')+'° / '+(c.tmin??'—')+'°C'],['Wind',c.wind==null?'—':c.wind.toFixed(0)+' km/h'],['Gusts',c.gust==null?'—':c.gust.toFixed(0)+' km/h'],['Pressure',c.pressure==null?'—':c.pressure.toFixed(0)+' hPa'],['Swell',c.wave==null?'—':c.wave.toFixed(1)+' m'],['Rain chance',c.rain==null?'—':c.rain.toFixed(0)+'%'],['Cloud',c.cloud==null?'—':c.cloud.toFixed(0)+'%'],['Moon',c.ph.name]].map(x=>`<div class="metric"><span class="label">${x[0]}</span><b>${x[1]}</b></div>`).join('');
 $('sunmoon').innerHTML=[['Sunrise',c.sunrise?.slice(11,16)||'—'],['Sunset',c.sunset?.slice(11,16)||'—'],['Moon',c.ph.name],['Illumination',Math.round(c.ph.illum*100)+'%']].map(x=>`<div class="metric"><span class="label">${x[0]}</span><b>${x[1]}</b></div>`).join('');
-$('tides').innerHTML=c.td.rows.length?c.td.rows.map(e=>`<div class="metric"><span class="label">${e.type}</span><b>${fmtTime(e.time)}</b><span class="small">${e.height.toFixed(2)} m</span></div>`).join(''):'<div class="small">No embedded BOM tide prediction for this date.</div>';$('tideNote').textContent=`BOM ${c.td.station} prediction. Actual water level varies with weather, wind and pressure.`;
-const wins=[];if(c.sunrise){const r=new Date(c.sunrise);wins.push(['Dawn',new Date(r-45*60000),new Date(+r+90*60000)])}if(c.sunset){const r=new Date(c.sunset);wins.push(['Dusk',new Date(+r-60*60000),new Date(+r+60*60000)])}$('windows').innerHTML=wins.map(x=>`<div class="status" style="margin:5px 0"><b>${x[0]}</b> — ${fmtTime(x[1])}–${fmtTime(x[2])}</div>`).join('');
-const labels={tide:'Tide movement',wind:'Wind',swell:'Swell',pressure:'Pressure trend',rain:'Rain',cloud:'Cloud/light',light:'Dawn & dusk',moon:'Moon'};$('breakdown').innerHTML=Object.keys(c.nw).map(k=>`<div class="scoreline"><div class="scorehead"><span><b>${labels[k]}</b> <span class="small">${Math.round(c.parts[k])}/100</span></span><b>${(c.parts[k]*c.nw[k]).toFixed(1)} pts</b></div><div class="bar"><i style="width:${clamp(c.parts[k])}%"></i></div></div>`).join('');$('why').textContent=`Final score is the weighted sum of the eight criteria. Current weights total 100% after normalisation. Data source: ${sourceInfo.fallback?'MET Norway fallback':'Open-Meteo'} for weather; BOM for tides.`}
-function renderHealth(){$('health').innerHTML=[['weather',sourceInfo.weather,'Weather',sourceInfo.fallback?'MET Norway fallback':'Open-Meteo'],['marine',sourceInfo.marine,'Marine / swell',sourceInfo.marine?'Open-Meteo marine':'Unavailable — score uses neutral swell value'],['tides',true,'Tides','BOM published predictions']].map(x=>`<div class="healthrow"><span>${x[1]?'🟢':'🟠'}</span><b>${x[2]}</b><span>${x[3]}</span></div>`).join('')}
-function renderWeights(){$('weights').innerHTML=Object.entries(weights).map(([k,v])=>`<label style="display:grid;grid-template-columns:1fr 65px;gap:8px;margin:7px 0">${k}<input data-w="${k}" type="number" min="0" max="100" value="${v}"></label>`).join('');document.querySelectorAll('[data-w]').forEach(e=>e.oninput=()=>{weights[e.dataset.w]=+e.value||0;localStorage.setItem('fwWeights',JSON.stringify(weights));if(week.length){load()}})}
+$('tides').innerHTML=c.td.rows.length?c.td.rows.map(e=>`<div class="metric"><span class="label">${e.type}</span><b>${fmtTime(e.time)}</b><span class="small">${e.height.toFixed(2)} m</span></div>`).join(''):'<div class="small">No embedded BOM prediction for this station/date. The station is not substituted silently.</div>';
+$('tideNote').innerHTML=`BOM station: <b>${c.td.station}</b>. <a href="https://www.bom.gov.au/australia/tides/" target="_blank">BOM live tide predictions</a> • <a href="https://tides.willyweather.com.au/" target="_blank">WillyWeather independent reference</a>`;
+const wins=[];if(c.sunrise){const r=new Date(c.sunrise);wins.push(['Dawn',new Date(+r-45*60000),new Date(+r+90*60000)])}if(c.sunset){const r=new Date(c.sunset);wins.push(['Dusk',new Date(+r-60*60000),new Date(+r+60*60000)])}
+$('windows').innerHTML=wins.map(x=>`<div class="status" style="margin:5px 0"><b>${x[0]}</b> — ${fmtTime(x[1])}–${fmtTime(x[2])}</div>`).join('');
+const labels={tide:'Tide',wind:'Wind',swell:'Swell',pressure:'Pressure',rain:'Rain',cloud:'Cloud/light',light:'Dawn & dusk',moon:'Moon'};
+$('breakdown').innerHTML=Object.keys(c.nw).map(k=>`<div class="scoreline"><div class="scorehead"><span><b>${labels[k]}</b> <span class="small">${Math.round(c.parts[k])}/100</span></span><b>${(c.parts[k]*c.nw[k]).toFixed(1)} pts</b></div><div class="bar"><i style="width:${clamp(c.parts[k])}%"></i></div></div>`).join('');
+const conf=(c.windSpread>8||c.rainSpread>25||c.marineWaveSpread>.7)?'MEDIUM':'HIGH';
+$('why').textContent=`Score uses model consensus. Forecast confidence for this day: ${conf}. Model spread: wind ${c.windSpread.toFixed(0)} km/h, rain probability ${c.rainSpread.toFixed(0)} percentage points, wave ${c.marineWaveSpread.toFixed(1)} m.`;
+}
+function renderHealth(){
+const modelRows=(sourceInfo.weatherModels||[]).map(x=>`<div class="healthrow"><span>${x.x?'🟢':'🟠'}</span><b>${x.name}</b><span>${x.x?'available':'unavailable'}</span></div>`).join('');
+const marineRows=(sourceInfo.marineModels||[]).map(x=>`<div class="healthrow"><span>${x.x?'🟢':'🟠'}</span><b>${x.name}</b><span>${x.x?'available':'unavailable'}</span></div>`).join('');
+$('health').innerHTML=`<div class="healthrow"><span>${sourceInfo.weatherModels?.some(x=>x.x)?'🟢':'🔴'}</span><b>Weather model consensus</b><span>${sourceInfo.weatherModels?.filter(x=>x.x).length||0}/4</span></div>
+${modelRows}<div class="healthrow"><span>${sourceInfo.marineModels?.some(x=>x.x)?'🟢':'🟠'}</span><b>Marine / swell models</b><span>${sourceInfo.marineModels?.filter(x=>x.x).length||0}/3</span></div>${marineRows}
+<div class="healthrow"><span>${sourceInfo.tide?'🟢':'🟠'}</span><b>BOM tide prediction</b><span>${sourceInfo.tide?'station matched':'no embedded prediction'}</span></div>
+<div class="healthrow"><span>🔵</span><b>WillyWeather</b><span>independent reference link</span></div>
+<div class="small" style="margin-top:8px">Important: Open-Meteo states that modelled coastal sea level/tides have limited coastal accuracy and are not suitable for navigation. They are used here only as a secondary consistency check, never as the primary tide prediction.</div>`;
+}
+function renderWeights(){
+$('weights').innerHTML=Object.entries(weights).map(([k,v])=>`<label style="display:grid;grid-template-columns:1fr 65px;gap:8px;margin:7px 0">${k}<input data-w="${k}" type="number" min="0" max="100" value="${v}"></label>`).join('');
+document.querySelectorAll('[data-w]').forEach(e=>e.oninput=()=>{weights[e.dataset.w]=+e.value||0;localStorage.setItem('fwWeights',JSON.stringify(weights));if(week.length)load()});
+}
 function renderSetup(){const s=SETUPS[$('species').value];$('setup').innerHTML=`<div class="setupgrid"><div><b>Bait</b></div><div>${s.bait}</div><div><b>Main line</b></div><div>${s.main}</div><div><b>Leader</b></div><div>${s.leader}</div><div><b>Rig / hook</b></div><div>${s.rig}</div>${s.notes?`<div><b>Notes</b></div><div>${s.notes}</div>`:''}</div>`}
-async function load(){const [name,lat,lon]=SPOTS[+$('spot').value];$('status').className='status';$('status').textContent='Loading live weather and marine data…';try{let wx;sourceInfo={weather:false,marine:false,fallback:false};try{wx=await openMeteo(lat,lon);sourceInfo.weather=true;sourceInfo.marine=!!wx.m}catch(primary){const fb=await metNorway(lat,lon);sourceInfo.weather=true;sourceInfo.fallback=true;const a=metFallbackData(fb.x);wx={w:{daily:{time:a.map(q=>q.date),temperature_2m_max:a.map(q=>q.tmax),temperature_2m_min:a.map(q=>q.tmin),sunrise:Array(7).fill(null),sunset:Array(7).fill(null)},hourly:{wind_speed_10m:[],wind_gusts_10m:[],precipitation_probability:[],cloud_cover:[],pressure_msl:[]}},m:null}}week=Array.from({length:7},(_,i)=>buildDay(i,wx,wx.m,name));renderDays();renderDetail();renderHealth();$('status').textContent=`Live data loaded • ${sourceInfo.fallback?'MET Norway fallback':'Open-Meteo'}`;renderSetup()}catch(e){renderHealth();$('status').className='status error';$('status').textContent='Live data unavailable: '+(e.message||e)+' — check connection and tap Refresh.';}}
-function applyTheme(){const t=$('theme').value;const p=t==='light'?['#eef4f5','#fff']:t==='dark'?['#05070a','#10151b']:t==='sand'?['#29231b','#3c3022']:['#071923','#0e2b38'];const bg=localStorage.getItem('fwBg')||p[0],card=localStorage.getItem('fwCard')||p[1];document.documentElement.style.setProperty('--bg',bg);document.documentElement.style.setProperty('--card',card);localStorage.setItem('fwTheme',t)}
-$('spot').onchange=()=>{localStorage.setItem('fwSpot',$('spot').value);load()};$('species').onchange=()=>{localStorage.setItem('fwSpecies',$('species').value);renderSetup();load()};$('refresh').onclick=load;$('resetWeights').onclick=()=>{weights={...DEFAULT};localStorage.setItem('fwWeights',JSON.stringify(weights));renderWeights();load()};$('timezone').onchange=()=>{localStorage.setItem('fwTz',$('timezone').value);load()};$('theme').onchange=applyTheme;$('bg').oninput=()=>{localStorage.setItem('fwBg',$('bg').value);applyTheme()};$('card').oninput=()=>{localStorage.setItem('fwCard',$('card').value);applyTheme()};
+
+async function load(){
+const [name,lat,lon]=SPOTS[+$('spot').value];
+$('status').className='status';$('status').textContent='Checking BOM, ECMWF, GFS and marine model data…';
+try{
+sourceInfo={weatherModels:[],marineModels:[],tide:!!BOM_TIDES[tideStation(name)]};
+const [wm,mm]=await Promise.all([fetchWeatherModels(lat,lon),fetchMarineModels(lat,lon)]);
+sourceInfo.weatherModels=wm;sourceInfo.marineModels=mm;
+const usable=wm.filter(x=>x.x);if(!usable.length)throw Error('No weather model returned usable data');
+week=Array.from({length:7},(_,i)=>buildDay(i,usable,mm.filter(x=>x.x),name));
+renderDays();renderDetail();renderHealth();renderSetup();
+$('status').textContent=`Live data loaded • ${usable.length}/4 weather models • ${mm.filter(x=>x.x).length}/3 marine models`;
+}catch(e){renderHealth();$('status').className='status error';$('status').textContent='Live data unavailable: '+(e.message||e)+' — check connection and tap Refresh.'}
+}
+function applyTheme(){const t=$('theme').value,p=t==='light'?['#eef4f5','#fff']:t==='dark'?['#05070a','#10151b']:t==='sand'?['#29231b','#3c3022']:['#071923','#0e2b38'];const bg=localStorage.getItem('fwBg')||p[0],card=localStorage.getItem('fwCard')||p[1];document.documentElement.style.setProperty('--bg',bg);document.documentElement.style.setProperty('--card',card);localStorage.setItem('fwTheme',t)}
+$('spot').onchange=()=>{localStorage.setItem('fwSpot',$('spot').value);load()};
+$('species').onchange=()=>{localStorage.setItem('fwSpecies',$('species').value);renderSetup();load()};
+$('refresh').onclick=load;
+$('resetWeights').onclick=()=>{weights={...DEFAULT};localStorage.setItem('fwWeights',JSON.stringify(weights));renderWeights();load()};
+$('timezone').onchange=()=>{localStorage.setItem('fwTz',$('timezone').value);load()};
+$('theme').onchange=applyTheme;
+$('bg').oninput=()=>{localStorage.setItem('fwBg',$('bg').value);applyTheme()};
+$('card').oninput=()=>{localStorage.setItem('fwCard',$('card').value);applyTheme()};
 renderWeights();renderSetup();applyTheme();load();
 </script></body></html>

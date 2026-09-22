@@ -3,7 +3,6 @@
   "short_name": "FishWindow",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#0b1220",
-  "theme_color": "#0ea5e9",
-  "description": "Fishing forecast and fishing-window planner for Geelong, Bellarine and Surf Coast."
+  "background_color": "#071923",
+  "theme_color": "#48d7a7"
 }

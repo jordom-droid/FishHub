@@ -1,4 +1,5 @@
-const CACHE='fishwindow-v3-2';
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./','./index.html','./manifest.json']))));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request).then(r=>{if(new URL(e.request.url).origin===location.origin){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy))}return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))))});
+// FishWindow v5: disable legacy cache to prevent stale app versions.
+self.addEventListener("install",()=>self.skipWaiting());
+self.addEventListener("activate",event=>event.waitUntil(
+  Promise.all([self.registration.unregister(), self.clients.claim()])
+));

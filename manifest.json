@@ -1,1 +1,9 @@
-{"name":"FishWindow Geelong Surf Coast","short_name":"FishWindow","start_url":"./","display":"standalone","background_color":"#071923","theme_color":"#062b3a","icons":[]}
+{
+  "name": "FishWindow",
+  "short_name": "FishWindow",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0ea5e9",
+  "description": "Fishing forecast and fishing-window planner for Geelong, Bellarine and Surf Coast."
+}

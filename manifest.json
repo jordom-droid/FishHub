@@ -1,0 +1,10 @@
+{
+  "name": "FishWindow Geelong & Surf Coast",
+  "short_name": "FishWindow",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#071923",
+  "theme_color": "#062b3a",
+  "description": "Fishing opportunity planner for Geelong, Bellarine and Surf Coast.",
+  "icons": []
+}
